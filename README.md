@@ -44,7 +44,7 @@ This script will allow users to more easily playtest the upcoming revision to D&
 
 **Script Patch Notes:**
 - **2024-05-07:**
-  - Initial upload of WIP V3 of the script.
+  - Initial upload of WIP V2.2 & V3 of the script.
 
 **Known Bugs:**
 - WIP file, so there will be a lot of bugs and mistakes until the file is complete. Will update when the script is finished.
