@@ -7,35 +7,35 @@ A lot of the content of this script is either ripped directly from existing code
 
 **Detailed List of Script Content:**
 - UA23PT7 Fighter & its subclasses
- - Battle Master
- - Brawler
- - Champion
- - Eldritch Knight
+  - Battle Master
+  - Brawler
+  - Champion
+  - Eldritch Knight
 - UA23PT7 Sorcerer & its subclasses
- - Draconic
- - Wild Magic
+  - Draconic
+  - Wild Magic
 - UA23PT7 Warlock & its subclasses **[STILL WIP]**
- - Archfey Patron
- - Celestial Patron
- - Fiend Patron
- - Great Old One Patron
+  - Archfey Patron
+  - Celestial Patron
+  - Fiend Patron
+  - Great Old One Patron
 - UA23PT7 Wizard & its subclasses **[STILL WIP]**
- - Abjurer
- - Diviner
- - Evoker
- - Illusionist
+  - Abjurer
+  - Diviner
+  - Evoker
+  - Illusionist
 - UA23PT7 spells
- - Arcane Eruption
- - Counterspell
- - Jump
- - Sorcerous Burst
+  - Arcane Eruption
+  - Counterspell
+  - Jump
+  - Sorcerous Burst
 - Fighter "Fighting Styles" as FeatureChoices, each of which adds the corresponding Fighting Style Feat
 - Five Fighting Style Feats (imported from *TCE*)
- - Blind
- - Interception
- - Superior Technique
- - Thrown Weapon
- - Unarmed
+  - Blind
+  - Interception
+  - Superior Technique
+  - Thrown Weapon
+  - Unarmed
 - Added "Two-Handed Improvised Weapon"; made with help from user "TrackAtNite"
 
 This encompasses all of the content in this UA article that wasn't superseded or removed in later content.
