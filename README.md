@@ -46,7 +46,7 @@ This script will allow users to more easily playtest the upcoming revision to D&
 - **2024-05-07:**
   - Initial upload of WIP V2.2 & V3 of the script.
 - **2024-05-08:**
-  - Replacement of WIP V2.2 with V2.9, & update to V3 of the script. Scripts now have all UA Warlock content. 
+  - Replacement of WIP V2.2 with V2.9, & update to V3 of the script. Scripts now have all UA Warlock content, though not all of that content works correctly at the moment. 
 
 **Known Bugs:**
 - WIP file, so there will be a lot of bugs and mistakes until the file is complete. Will update when the script is finished.
