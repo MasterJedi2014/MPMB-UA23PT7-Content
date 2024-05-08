@@ -50,6 +50,8 @@ This script will allow users to more easily playtest the upcoming revision to D&
 
 **Known Bugs:**
 - WIP file, so there will be a lot of bugs and mistakes until the file is complete. Will update when the script is finished.
+- Pact of the Blade does not add a weapon's Mastery property like it should be doing.
+- A not insignificant number of the Eldritch Invocations are failing to appear in the "Choose Feature" menu.
 
 **Script Content Source:** https://media.dndbeyond.com/compendium-images/ua/ph-playtest7/tsgOb3llF22AL0nU/UA2023-PH-Playtest7.pdf
 
