@@ -14,7 +14,7 @@ A lot of the content of this script is either ripped directly from existing code
 - UA23PT7 Sorcerer & its subclasses
   - Draconic
   - Wild Magic
-- UA23PT7 Warlock & its subclasses **[STILL WIP]**
+- UA23PT7 Warlock & its subclasses
   - Archfey Patron
   - Celestial Patron
   - Fiend Patron
@@ -45,6 +45,8 @@ This script will allow users to more easily playtest the upcoming revision to D&
 **Script Patch Notes:**
 - **2024-05-07:**
   - Initial upload of WIP V2.2 & V3 of the script.
+- **2024-05-08:**
+  - Replacement of WIP V2.2 with V2.9, & update to V3 of the script. Scripts now have all UA Warlock content. 
 
 **Known Bugs:**
 - WIP file, so there will be a lot of bugs and mistakes until the file is complete. Will update when the script is finished.
