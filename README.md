@@ -19,6 +19,7 @@ A lot of the content of this script is either ripped directly from existing code
   - Celestial Patron
   - Fiend Patron
   - Great Old One Patron
+  - Most of the WotC Invocations (Only the pre-2022 UA duplicates were excluded)
 - UA23PT7 Wizard & its subclasses **[STILL WIP]**
   - Abjurer
   - Diviner
