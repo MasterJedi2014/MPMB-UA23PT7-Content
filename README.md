@@ -46,12 +46,14 @@ This script will allow users to more easily playtest the upcoming revision to D&
 - **2024-05-07:**
   - Initial upload of WIP V2.2 & V3 of the script.
 - **2024-05-08:**
-  - Replacement of WIP V2.2 with V2.9, & update to V3 of the script. Scripts now have all UA Warlock content, though not all of that content works correctly at the moment. 
+  - Replacement of WIP V2.2 with V2.9, & update to V3 of the script. Scripts now have all UA Warlock content, though not all of that content works correctly at the moment.
+- **2024-05-09:**
+  - Replacement of WIP V2.9 with V2.92, & replacement of WIP V3 with V4 of the script. Scripts now have all UA Warlock content, and it should now all be working.
 
 **Known Bugs:**
 - WIP file, so there will be a lot of bugs and mistakes until the file is complete. Will update when the script is finished.
 - Pact of the Blade does not add a weapon's Mastery property like it should be doing.
-- A not insignificant number of the Eldritch Invocations are failing to appear in the "Choose Feature" menu.
+- ~~A not insignificant number of the Eldritch Invocations are failing to appear in the "Choose Feature" menu.~~
 
 **Script Content Source:** https://media.dndbeyond.com/compendium-images/ua/ph-playtest7/tsgOb3llF22AL0nU/UA2023-PH-Playtest7.pdf
 
