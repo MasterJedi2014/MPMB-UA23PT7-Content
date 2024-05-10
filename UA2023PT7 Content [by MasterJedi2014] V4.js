@@ -3,7 +3,7 @@
 	Effect:		This script adds the content from the 2023 Unearthed Arcana "Player's Handbook Playtest 7" article.
 				This file has been made by MasterJedi2014, borrowing a lot of code from MPMB and those who have contributed to the sheet's existing material.
 	Code by:	MasterJedi2014, using MorePurpleMoreBetter's code as reference
-	Date:		2024-05-09 (sheet v13.1.0)
+	Date:		2024-05-10 (sheet v13.1.0)
 */
 
 var iFileName = "UA2023PT7 Content [by MasterJedi2014] V4.js";
@@ -19,7 +19,7 @@ SourceList["UA23PT7"] = {
 SourceList["MJ:HB"] = {
 	name : "MasterJedi2014's Homebrew",
 	abbreviation : "MJ:HB",
-	date : "2024/05/09",
+	date : "2024/05/10",
 };
 
 // Add UA23PT7 Fighter class
@@ -103,7 +103,9 @@ ClassList.fighter_ua23pt7 = {
 				"My chosen weapon types will appear in the pg 3 Notes section.",
 			]),
 			calcChanges : {
-				attAdd : genericFunctions.weaponMasteryAtkAdd
+				atkAdd : [
+					genericFunctions.weaponMasteryAtkAdd, "", 950,
+				],
 			},
 			extraname : "Weapon Mastery",
 			extrachoices : ["Club", "Dagger", "Greatclub", "Handaxe", "Javelin", "Light Hammer", "Mace", "Quarterstaff", "Sickle", "Spear", "Light Crossbow", "Dart", "Shortbow", "Sling", "Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd", "Lance", "Longsword", "Maul", "Morningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War Pick", "Warhammer", "Whip", "Blowgun", "Hand Crossbow", "Heavy Crossbow", "Longbow", "Pistol", "Musket", "Pistol Automatic", "Revolver", "Hunting Rifle", "Automatic Rifle", "Shotgun", "Laser Pistol", "Antimatter Rifle", "Laser Rifle"],
@@ -388,7 +390,9 @@ ClassList.fighter_ua23pt7 = {
 				"For reference, the prerequisites for each Mastery property will be listed in the pg 3 Notes section.",
 			]),
 			calcChanges : {
-				attAdd : genericFunctions.masterOfArmamentsAtkAdd
+				atkAdd : [
+					genericFunctions.masterOfArmamentsAtkAdd, "", 950,
+				],
 			},
 			toNotesPage : [{
 				name : "Master of Armaments: Mastery Property Prerequisites",
@@ -1069,7 +1073,7 @@ AddSubClass("fighter_ua23pt7", "brawler_ua23pt7", {
 		},
 	},
 });
-if (ClassSubList["fighter_ua23pt7-brawler_ua23pt7"]) {
+if (ClassSubList["fighter_ua23pt7-brawler"]) {
 	AddFeatureChoice(ClassSubList["fighter_ua23pt7-brawler_ua23pt7"].features["subclassfeature3.1"], true, "One-Handed 1: Light", {
 		name : "One-Handed 1: Light",
 		extraname : "Brawler Fighter 3",
@@ -1698,7 +1702,7 @@ AddFeatureChoice(ClassList.sorcerer_ua23pt7.features["font of magic ua23pt7"], t
 }, "Optional 2nd-level sorcerer features");
 
 ////// Add UA23PT7 Draconic Sorcerer subclass
-AddSubClass("sorcerer_ua23pt7", "draconic bloodline_ua23pt7", {
+AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 	regExpSearch : /^(?=.*(sorcerer))(?=.*(draconic|dragon)).*$/i,
 	subname : "Draconic Bloodline",
 	source : [["UA23PT7", 22], ["SRD", 44], ["P", 102], ["MJ:HB", 0]],
@@ -1983,7 +1987,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline_ua23pt7", {
 });
 
 ////// Add UA23PT7 Wild Magic Sorcerer subclass
-AddSubClass("sorcerer_ua23pt7", "wild magic_ua23pt7", {
+AddSubClass("sorcerer_ua23pt7", "wild magic", {
 	regExpSearch : /^(?=.*(mage|magus|sorcerer))(?=.*(wild|chaos|chaotic)).*$/i,
 	subname : "Wild Magic",
 	fullname : "Wild Mage",
@@ -3573,7 +3577,9 @@ AddFeatureChoice(ClassList.warlock_ua23pt7.features["pact magic ua23pt7"], true,
 	]),
 	calcChanges : {
 		atkAdd : [
-			function(weaponMasteryAtkAdd) {}, "", 290,
+			atkAdd : [
+				genericFunctions.weaponMasteryAtkAdd, "", 950,
+			],
 		],
 	},
 	prereqeval : function (v) { return classes.known.warlock_ua23pt7.level >= 2 ? true : "skip" && GetFeatureChoice('class', 'warlock_ua23pt7', 'eldritch invocations ua23pt7') == 'pact of the blade'; }
@@ -3892,70 +3898,87 @@ ClassList.wizard_ua23pt7 = {
 		return What('Int') >= 13;
 	},
 	die : 6,
-	improvements : [0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6],
-	saves : ["Dex", "Int"],
-	skills : ["\n\n" + toUni("Rogue") + ": Choose four from Acrobatics, Athletics, Deception, Insight, Intimidation, Investigation, Perception, Persuasion, Sleight of Hand, Stealth", ": Choose one from Acrobatics, Athletics, Deception, Insight, Intimidation, Investigation, Perception, Persuasion, Sleight of Hand, Stealth"],
+	improvements : [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5],
+	saves : ["Int", "Wis"],
+	skills : ["\n\n" + toUni("Wizard") + ": Choose two from Arcana, History, Insight, Investigation, Medicine, Religion", ""],
 	armor : [
-		[true, false, false, false],
-		[true, false, false, false],
+		[false, false, false, false],
+		[false, false, false, false],
 	],
-	toolProfs : {
-		primary : [["Thieves' tools", "Dex"]],
-		secondary : [["Thieves' tools", "Dex"]],
-	},
 	weapons : [
-		[true, true, ["Martial weapons with the Finesse property"]],
-		[false, true, ["Martial weapons with the Finesse property"]],
+		[false, false, [""]],
+		[false, false, [""]],
 	],
-	equipment : "Rogue starting equipment:" +
-		"\n \u2022 Leather Armor," +
-		"\n \u2022 Arrows (20)," +
-		"\n \u2022 Burglar's Pack," +
+	equipment : "Wizard starting equipment:" +
+		"\n \u2022 Arcane Focus (Quarterstaff)," +
 		"\n \u2022 Dagger (2)," +
-		"\n \u2022 Quiver," +
-		"\n \u2022 Shortbow," +
-		"\n \u2022 Shortsword," +
-		"\n \u2022 Thieves' tools," +
-		"\n \u2022 and 18 gp;" +
-		"\n\nAlternatively, choose 110 gp worth of starting equipment instead of the class' starting equipment.",
-	subclasses : ["Roguish Archetype", []],
+		"\n \u2022 Robe," +
+		"\n \u2022 Scholar's Pack," +
+		"\n \u2022 and 5 gp;" +
+		"\n\nAlternatively, choose 55 gp worth of starting equipment instead of the class' starting equipment.",
+	subclasses : ["Arcane Tradition", []],
 	attacks : [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-	abilitySave : 2,
+	abilitySave : 4,
+	spellcastingFactor : 1,
+	spellcastingKnown : {
+		cantrips : [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+		spells : "book",
+		prepared : true,
+	},
 	features : {
-		"expertise ua23pt6" : function() { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
+		"arcane recovery ua23pt7" : { //Ripped directly from "ListsClasses.js" and then altered
+			name : "Arcane Recovery",
+			source : [["UA23PT7", 37], ["SRD", 53], ["P", 115], ["MJ:HB", 0]],
+			minlevel : 1,
+			description : desc([
+				"Once per Long Rest, after a Short Rest, I can recover a number of 5th-level or lower spell slots.",
+				"The recovered spell slots can have a combined level \u003c half my Wizard lvl (rounded up).",
+			]),
+			additional : levels.map(function (n) {
+				var lvls = Math.ceil(n / 2);
+				return lvls + " level" + (lvls > 1 ? "s" : "") + " of spell slots";
+			}),
+			usages : 1,
+			recovery : "long rest",
+		},
+		"spellcasting ua23pt7" : { //Ripped directly from "ListsClasses.js" and then altered
+			name : "Spellcasting",
+			source : [["UA23PT7", 38], ["SRD", 52], ["P", 114], ["MJ:HB", 0]],
+			minlevel : 1,
+			description : desc([
+				"I can cast prepared Wizard cantrips/spells, using Intelligence as my spellcasting ability.",
+				"I can use an Arcane Focus as a spellcasting focus for my Wizard spells.",
+				"I can cast all Wizard spells in my spellbook as Rituals if they have the Ritual tag.",
+				"I can copy any leveled spell I find into my spellbook at a cost of 2 hours \u0026 50gp per lvl.",
+				"Whenever I gain a Wizard lvl after 1, I can add 2 Wizard spells of my to choice my spellbook;",
+				"  Each of these spells must be of a lvl for which I have spell slots.",
+				"I can copy a spell from my own spellbook into another book at a cost of 1 hour \u0026 10gp per",
+				"  level. If I lose my spellbook, I can use the same procedure to transcribe my prepared Wizard",
+				"  spells into a new spellbook.",
+			]),
+			/*	I have added language to the description regarding the copying of spells into a spellbook, how
+				many spells a Wizard gets upon lvl up, & the cost of replacing/copying the spellbook; I'd
+				personally rather have that info explicitly on the sheet than have to look it up every time it
+				comes up. I know doing so tripled the length of the description, but I personally feel it is
+				worth it. You can change it back if you want when you make the official revision updates to the
+				class code, Joost.		-MasterJedi2014	*/
+			additional : levels.map(function (n, idx) {
+				return [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5][idx] + " cantrips known";
+			}),
+		},
+		"scholar ua23pt7" : function() { //Copied directly from the Rogue's "Expertise" feature in "ListsClasses.js" and then altered
 			var a = {
-				name : "Expertise",
-				source : [["UA23PT6", 49], ["SRD", 39], ["P", 96]],
-				minlevel : 1,
-				description : desc("I gain expertise with two skills/thieves' tools I am proficient with; two more at 6th level"),
-				skillstxt : "Expertise with any two skill proficiencies and/or thieves' tools, and two more at 6th level",
-				additional : levels.map(function (n) {
-					return "with " + (n < 6 ? 2 : 4) + " skills";
-				}),
+				name : "Scholar",
+				source : [["UA23PT7", 39], ["MJ:HB", 0]],
+				minlevel : 2,
+				description : desc([
+					"I specialized in an academic field of study. I gain Expertise in one of the following skills in",
+					"  which I already have Proficiency: Arcana, History, Nature, or Religion.",
+				]),
+				skillstxt : "Expertise in one of the following skills in which I already have Proficiency: Arcana, History, Nature, or Religion.",
 				extraname : "Expertise",
-				extrachoices : ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival", "Thieves' Tools"],
-				extraTimes : levels.map(function (n) { return n < 6 ? 2 : 4; }),
-				"thieves' tools" : {
-					name : "Thieves' Tools Expertise", description : "",
-					source : [["SRD", 39], ["P", 96]],
-					prereqeval : function(v) {
-						if ((/thieve.?s.*tools/i).test(What('Too Text')) && tDoc.getField("Too Prof").isBoxChecked(0)) {
-							return tDoc.getField("Too Exp").isBoxChecked(0) ? "markButDisable" : true;
-						} else {
-							return CurrentProfs.tool["thieves' tools"] || (/thieve.?s.{1,3}tools/i).test(v.toolProfs.toString());
-						}
-					},
-					eval : function () {
-						if ((/thieve.?s.*tools/i).test(What('Too Text'))) {
-							Checkbox('Too Exp', true);
-						};
-					},
-					removeeval : function () {
-						if ((/thieve.?s.*tools/i).test(What('Too Text'))) {
-							Checkbox('Too Exp', false);
-						};
-					},
-				},
+				extrachoices : ["Arcana", "History", "Nature", "Religion"],
+				extraTimes : 1,
 			};
 			for (var i = 0; i < a.extrachoices.length; i++) {
 				var attr = a.extrachoices[i].toLowerCase();
@@ -3972,325 +3995,411 @@ ClassList.wizard_ua23pt7 = {
 			}
 			return a;
 		}(),
-		"sneak attack ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Sneak Attack",
-			source : [["UA23PT6", 49], ["SRD", 39], ["P", 96]],
-			minlevel : 1,
-			description : desc([
-				"Once per turn, I can add damage to a finesse/ranged weapon attack if I have advantage",
-				"I don't need adv. if the target has a conscious enemy within 5 ft and I don't have disadv."
-			]),
-			additional : levels.map(function (n) {
-				return Math.ceil(n / 2) + "d6";
-			}),
-			calcChanges : {
-				atkAdd : [
-					function (fields, v) {
-						if (classes.known.rogue && classes.known.rogue.level && !v.isSpell && !v.isDC && (v.isRangedWeapon || (/\bfinesse\b/i).test(fields.Description))) {
-							v.sneakAtk = Math.ceil(classes.known.rogue.level / 2);
-							fields.Description += (fields.Description ? '; ' : '') + 'Sneak attack ' + v.sneakAtk + 'd6';
-						};
-					},
-					"Once per turn, when I attack with a ranged or finesse weapon while I have advantage or an conscious ally is within 5 ft of the target, I can add my sneak attack damage to the attack.",
-					700
-				]
-			}
-		},
-		"thieves cant ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Thieves' Cant",
-			source : [["UA23PT6", 50], ["SRD", 39], ["P", 96]],
-			minlevel : 1,
-			description : desc("I know the secret rogue language that I can use to convey messages inconspicuously"),
-			languageProfs : ["Thieves' Cant"]
-		},
-		"weapon mastery ua23pt6" : { //Using Reaction Fields for this because there are too many possible weapons to choose from and I don't know how to code FeatureChoices to take that vast number of possible weapons into account.
-			name : "Weapon Mastery",
-			source : [["UA23PT6", 50], ["MJ:HB", 0]],
-			minlevel : 1,
-			description : desc([
-				"I can use the Mastery property of two kinds of weapons of my choice with which I have proficiency.",
-				"I can change what weapons I can use the Mastery property of after finishing a Long Rest.",
-			]),
-			action : [
-				["reaction", "Wpn Mstry 1: [Wpn Name]"],
-				["reaction", "Wpn Mstry 2: [Wpn Name]"],
-			],
-		},
-		"cunning action ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Cunning Action",
-			source : [["UA23PT6", 50], ["SRD", 40], ["P", 96]],
-			minlevel : 2,
-			description : desc("I can use a Bonus Action to take the Dash, Disengage, or Hide action"),
-			action : ["bonus action", ""]
-		},
-		"steady aim ua23pt6" : { //Description attribute ripped from all_WotC_pub+UA.js
-			name : "Steady Aim",
-			source : [["UA23PT6", 50], ["T", 62], ["MJ:HB", 0]],
+		"subclassfeature3" : { //Ripped directly from "ListsClasses.js" and then altered
+			name : "Arcane Tradition",
+			source : [["UA23PT7", 39], ["SRD", 53], ["P", 115], ["MJ:HB", 0]],
 			minlevel : 3,
-			description : desc([
-				"As a Bonus Action if I don't move during my turn, I can give myself Adv. on my next attack",
-				"This attack roll has to be in the same turn and my speed is 0 until the end of the turn",
-			]),
-			action : ["bonus action", ""]
+			description : desc('Choose the Arcane Tradition you studied and put it in the "Class" field '),
 		},
-		"subclassfeature3" : { //Ripped directly from ListClasses.js
-			name : "Roguish Archetype",
-			source : [["UA23PT6", 50], ["SRD", 40], ["P", 96], ["MJ:HB", 0]],
-			minlevel : 3,
-			description : desc('Choose a Roguish Archetype you strive to emulate and put it in the "Class" field ')
-		},
-		"cunning strike ua23pt6" : {
-			name : "Cunning Strike",
-			source : [["UA23PT6", 50], ["MJ:HB", 0]],
+		"memorize spell ua23pt7" : { //Original to the UA Wizard
+			name : "Memorize Spell",
+			source : [["UA23PT7", 39], ["MJ:HB", 0]],
 			minlevel : 5,
 			description : desc([
-				"When I deal Sneak Attack damage, I can add one of the following effects.",
-				"Each effect has a die cost, which is the number of Sneak Attack damage dice I must forego to add the effect.",
-				"Remove the die before rolling damage, and the effect occurs immediately after the damage is dealt.",
-				" \u2022 Disarm (1d6). Target make a Dex save or it drops one item of my choice that it’s holding.",
-				" \u2022 Poison (1d6). Target make a Con save or it gains the Poisoned condition for 1 min;",
-				"  Target save at end of turn to end condition. I need a Poisoner's Kit on my person to use this one.",
-				" \u2022 Trip (1d6). If target is Large or smaller, it makes a Dex save or gains the Prone condition.",
-				" \u2022 Withdraw (1d6). Immediately after the attack, I move half my Speed without provoking Opportunity Attacks.",
+				"I can study my spellbook for 1 minute and prepare one extra 1st-lvl or higher spell from my",
+				"  spellbook that wasn't already prepared. This spell is prepared until I use this feature to",
+				"  prepare a different spell.",
 			]),
 		},
-		"uncanny dodge ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Uncanny Dodge",
-			source : [["UA23PT6", 50], ["SRD", 40], ["P", 96]],
-			minlevel : 5,
-			description : desc("As a Reaction, I can halve the damage of an attack from an attacker that I can see"),
-			action : ["reaction", ""]
-		},
-		"evasion ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Evasion",
-			source : [["UA23PT6", 50], ["SRD", 40], ["P", 96]],
-			minlevel : 7,
-			description : desc("My Dexterity saves vs. areas of effect negate damage on success and halve it on failure"),
-			savetxt : { text : ["Dex save vs. area effects: fail \u2015 half dmg, success \u2015 no dmg"] }
-		},
-		"reliable talent ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Reliable Talent",
-			source : [["UA23PT6", 51], ["SRD", 40], ["P", 96]],
-			minlevel : 7,
-			description : desc("If I make an ability check where I add my Proficiency Bonus, rolls of 9 or lower are 10")
-		},
-		"improved cunning strike ua23pt6" : {
-			name : "Improved Cunning Strike",
-			source : [["UA23PT6", 51], ["MJ:HB", 0]],
-			minlevel : 11,
-			description : desc([
-				"I can use up to two Cunning Strike effects when I deal Sneak Attack damage.",
-				"I have to pay the die cost for each effect.",
-			]),
-		},
-		"devious strikes ua23pt6" : {
-			name : "Devious Strikes",
-			source : [["UA23PT6", 51], ["MJ:HB", 0]],
-			minlevel : 14,
-			description : desc([
-				"I gain the following new Cunning Strike effects:",
-				" \u2022 Daze (2d6). Target make a Con save or it gains the Dazed condition until end of its next turn.",
-				" \u2022 Knock Out (6d6). Target make a Con save or it gains the Unconscious condition for 1 min;",
-				"  Target save at end of turn to end condition. Condition ends if target takes any damage.",
-				" \u2022 Obscure (3d6). Target make a Dex save or it gains the Blinded condition until end of its next turn.",
-			]),
-		},
-		"slippery mind ua23pt6" : { //Ripped directly from ListClasses.js and then altered
-			name : "Slippery Mind",
-			source : [["UA23PT6", 51], ["SRD", 40], ["P", 96], ["MJ:HB", 0]],
-			minlevel : 15,
-			description : desc("I am proficient with Wisdom and Charisma saving throws"),
-			saves : ["Wis", "Cha"]
-		},
-		"elusive ua23pt6" : { //Ripped directly from ListClasses.js; left unaltered aside from adding UA source
-			name : "Elusive",
-			source : [["UA23PT6", 51], ["SRD", 40], ["P", 96]],
+		"spell mastery ua23pt7" : { //Ripped directly from "ListsClasses.js" and then altered
+			name : "Spell Mastery",
+			source : [["UA23PT7", 39], ["SRD", 53], ["P", 115], ["MJ:HB", 0]],
 			minlevel : 18,
-			description : desc("Attackers do not gain advantage on attacks vs. me, unless I am Incapacitated")
+			description : desc([
+				"After a Long Rest, I can pick a 1st and 2nd-level spell in my spellbook;",
+				"While prepared, I can cast them at their lowest levels without expending spell slots;",
+				"I must expend a spell slot to cast these spells at a higher level.",
+			]),
 		},
-		"stroke of luck ua23pt6" : { //Ripped directly from ListClasses.js and then altered
-			name : "Stroke of Luck",
-			source : [["UA23PT6", 51], ["SRD", 40], ["P", 97], ["MJ:HB", 0]],
+		"signature spells ua23pt7" : { //Ripped directly from "ListsClasses.js" and then altered
+			name : "Signature Spells",
+			source : [["UA23PT7", 39], ["SRD", 54], ["P", 115], ["MJ:HB", 0]],
 			minlevel : 20,
-			description : desc("I can turn a failed d20 Test into a natural 20"),
+			description : desc([
+				"Two 3rd-level spells of my choice in my spellbook will always count as prepared.",
+				"I can cast both at third level once per Short Rest or Long Rest without expending spell slots.",
+				"I must expend a spell slot to cast these spells at a higher level.",
+			]),
 			recovery : "short rest",
-			usages : 1
+			usages : 2,
 		},
 	},
 };
 
 //// Add Wizard optional choices
-
+AddFeatureChoice(ClassList.wizard_ua23pt7.features["arcane recovery ua23pt7"], true, "Cantrip Formulas", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
+	name : "Cantrip Formulas",
+	extraname : "Optional Wizard 3",
+	source : [["T", 76]],
+	description : desc([
+		"I have scribed arcane formulas in my spellbook with which I formulate cantrips in my mind.",
+		"Whenever I finish a Long Rest, I can use this to change a Wizard cantrip I know for another.",
+	]),
+	prereqeval : function (v) { return classes.known.wizard_ua23pt7.level >= 3 ? true : "skip"; },
+}, "Optional 3rd-level wizard features");
 
 ////// Add UA23PT7 Abjurer Wizard subclass
-
-
-////// Add UA23PT7 Diviner Wizard subclass
-AddSubClass("rogue_ua23pt6", "assassin_ua23pt6", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
-	regExpSearch : /^(?=.*(trickster|rogue))(?=.*assassin).*$/i,
-	subname : "Assassin",
-	source : [["UA23PT6", 53], ["P", 97], ["MJ:HB", 0]],
+AddSubClass("wizard_ua23pt7", "abjuration", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
+	regExpSearch : /(abjuration|abjurer)/i,
+	subname : "School of Abjuration",
+	fullname : "Abjurer",
+	source : [["UA23PT7", 40], ["P", 115], ["MJ:HB", 0]],
 	features : {
 		"subclassfeature3" : {
-			name : "Bonus Proficiencies",
-			source : [["UA23PT6", 53], ["P", 97]],
+			name : "Abjuration Savant",
+			source : [["UA23PT7", 40], ["P", 115], ["MJ:HB", 0]],
 			minlevel : 3,
-			description : "\n   " + "I am proficient with Disguise Kits and Poisoner's Kits",
-			toolProfs : ["Disguise kit", "Poisoner's kit"]
+			description : desc([
+				"I can add two Abjuration spells from the Wizard spell list, each 2nd-lvl or lower, to my spellbook",
+				"  for free. Additionally, when I gain a new level of spell slots in this class, I can add one",
+				"  Abjuration spell from the Wizard spell list to my spellbook for free.",
+			]), //The following code for this feature was ripped from the Eldritch Knight and then altered
+			additional : ["", "", "2 Abjur. spells", "2 Abjur. spells", "3 Abjur. spells", "3 Abjur. spells", "4 Abjur. spells", "4 Abjur. spells", "5 Abjur. spells", "5 Abjur. spells", "6 Abjur. spells", "6 Abjur. spells", "7 Abjur. spells", "7 Abjur. spells", "8 Abjur. spells", "8 Abjur. spells", "9 Abjur. spells", "9 Abjur. spells", "10 Abjur. spells", "10 Abjur. spells"],
+			spellcastingBonus : {
+				name : "From the Abjuration school",
+				"class" : ["wizard", "wizard_ua23pt7"],
+				school : ["Abjur"],
+				times : [0, 0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+			},
 		},
 		"subclassfeature3.1" : {
-			name : "Assassinate",
-			source : [["UA23PT6", 53], ["P", 97]],
+			name : "Arcane Ward",
+			source : [["UA23PT7", 40], ["P", 115], ["MJ:HB", 0]],
 			minlevel : 3,
 			description : desc([
-				"I have Adv. on attack rolls against creatures that have not taken a turn in combat yet.",
-				"Any hit I score against such a creature takes extra damage equal to my Rogue level.",
-				"I also have Adv. on Initiative rolls.",
+				"Whenever I cast an 1st-level or higher Abjuration spell with a spell slot, I make/heal a ward.",
+				"I make it at max HP; When I cast an Abjur. spell again, it heals 2 HP per spell slot lvl.",
+				"I can alternatively expend a spell slot as a Bonus Action to heal the ward 2 HP per slot lvl.",
+				"It stays active at 0 HP and doesn't go away until I finish my next Long Rest.",
+				"If I take damage, the ward takes the damage instead, but excess damage carries over to me.",
 			]),
+			additional : levels.map( function(n) {
+				return n < 2 ? "" : "Ward max HP: " + (n * 2) + "+Int mod";
+			}),
+			usages : 1,
+			recovery : "long rest",
+			action : ["bonus action", "Heal Arcane Ward (2HP/SL)"],
 		},
-		"subclassfeature9" : {
-			name : "Infiltration Expertise",
-			source : [["UA23PT6", 53], ["MJ:HB", 0]],
-			minlevel : 9,
+		"subclassfeature6" : {
+			name : "Projected Ward",
+			source : [["UA23PT7", 40], ["P", 115]],
+			minlevel : 6,
+			description : "\n   " + "As a Reaction, my Arcane Ward can absorb damage done to a creature within 30 ft.",
+			action : ["reaction", ""],
+		},
+		"subclassfeature10" : {
+			name : "Spell Breaker", //Previously known as "Improved Abjuration"
+			source : [["UA23PT7", 40], ["P", 115], ["MJ:HB", 0]],
+			minlevel : 10,
 			description : desc([
-				"While in a disguise created using my Disguise Kit, I have Adv. on Cha (Deception) checks",
-				"  while pretending to be someone else. I can also unerringly mimic another person's speech,",
-				"  handwriting, or both if I have spent at least 1 hour studying each one.",
+				"I now always have the Dispel Magic spell prepared.",
+				"Additionally, I can add my Proficiency Bonus to its ability check.",
 			]),
+			spellcastingBonus : {
+				name : "Spell Breaker",
+				spells : ["dispel magic"],
+				selection : ["dispel magic"],
+				times : 1,
+				firstCol : "markedbox",
+			},
+			calcChanges : {
+				spellAdd : [
+					function (spellKey, spellObj, spName) {
+						if (spellKey === "dispel magic") {
+							var profB = Number(How("Proficiency Bonus"));
+							var checkStr = "(" + AbilityScores.names.join("|") + "|spell(casting)?( ability )?) check";
+							var checkRx = RegExp(checkStr + " \\(([+-]?\\d+)\\)", "i");
+							var theBonus = profB;
+							if (checkRx.test(spellObj.description)) {
+								var theMatch = spellObj.description.match(checkRx);
+								theBonus += Number(theMatch[2]);
+								if (tDoc.getField("Remarkable Athlete").isBoxChecked(0) === 1 && theMatch[1].test(/Str|Dex|Con/i)) {
+									theBonus -= Math.ceil(profB/2);
+								} else if (tDoc.getField("Jack of All Trades").isBoxChecked(0) === 1) {
+									theBonus -= Math.floor(profB/2);
+								}
+							} else {
+								var theMatch = spellObj.description.match(RegExp(checkStr, "i"));
+							}
+							spellObj.description = spellObj.description.replace(theMatch[0], theMatch[1] + " check (" + (theBonus >= 0 ? "+" : "") + theBonus + ")");
+							return true;
+						};
+					},
+					"I add my Proficiency Bonus to ability checks required by Dispel Magic. This is shown on the spell sheet by a lowered DC on the check."
+				]
+			},
 		},
-		"subclassfeature13" : {
-			name : "Envenom Weapons",
-			source : [["UA23PT6", 53], ["MJ:HB", 0]],
-			minlevel : 13,
+		"subclassfeature14" : {
+			name : "Spell Resistance",
+			source : [["UA23PT7", 40], ["P", 116], ["MJ:HB", 0]],
+			minlevel : 14,
+			description : "\n   " + "I have Adv. on spell saves and Resistance to spell damage.",
+			dmgres : ["Spells"],
+			savetxt : { adv_vs : ["spells"] },
+		},
+	},
+});
+
+////// Add UA23PT7 Diviner Wizard subclass
+AddSubClass("wizard_ua23pt7", "divination", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
+	regExpSearch : /(divination|diviner|divinator)/i,
+	subname : "School of Divination",
+	fullname : "Diviner",
+	source : [["UA23PT7", 40], ["P", 116], ["MJ:HB", 0]],
+	features : {
+		"subclassfeature3" : {
+			name : "Divination Savant",
+			source : [["UA23PT7", 40], ["P", 116], ["MJ:HB", 0]],
+			minlevel : 3,
+			description : desc([ //The following code for this feature was ripped from the Abjurer above and then altered
+				"I can add two Divination spells from the Wizard spell list, each 2nd-lvl or lower, to my spellbook",
+				"  for free. Additionally, when I gain a new level of spell slots in this class, I can add one",
+				"  Divination spell from the Wizard spell list to my spellbook for free.",
+			]),
+			additional : ["", "", "2 Div. spells", "2 Div. spells", "3 Div. spells", "3 Div. spells", "4 Div. spells", "4 Div. spells", "5 Div. spells", "5 Div. spells", "6 Div. spells", "6 Div. spells", "7 Div. spells", "7 Div. spells", "8 Div. spells", "8 Div. spells", "9 Div. spells", "9 Div. spells", "10 Div. spells", "10 Div. spells"],
+			spellcastingBonus : {
+				name : "From the Divination school",
+				"class" : ["wizard", "wizard_ua23pt7"],
+				school : ["Div"],
+				times : [0, 0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+			},
+		},
+		"subclassfeature3.1" : {
+			name : "Portent",
+			source : [["UA23PT7", 41], ["P", 116], ["MJ:HB", 0]],
+			minlevel : 3,
 			description : desc([
-				"When I use the Poison option of my Cunning Strike, the target takes +2d6 Poison damage",
-				"  when it fails the saving throw. This extra damage ignores resistance to Poison damage.",
+				"After a Long Rest, I roll dice and keep the results to be used before my next rest.",
+				"A result can replace any d20 Test made by me or a creature I can see.",
+				"I choose to switch them before the dice to be replaced are rolled; Max once per turn.",
+			]),
+			additional : levels.map( function(n) {
+				return n < 2 ? "" : (n < 14 ? 2 : 3) + "d20 after a long rest";
+			}),
+		},
+		"subclassfeature6" : {
+			name : "Expert Divination",
+			source : [["UA23PT7", 41], ["P", 116], ["MJ:HB", 0]],
+			minlevel : 6,
+			description : desc([
+				"When I cast a Divination spell \u2265 2nd-lvl using a spell slot, I regain 1 spent spell slot",
+				"  of a lower level than the one I cast \u0026 \u003c 5th-lvl.",
 			]),
 		},
-		"subclassfeature17" : {
-			name : "Death Strike",
-			source : [["UA23PT6", 54], ["P", 97], ["MJ:HB", 0]],
-			minlevel : 17,
-			description : "\n   " + "When I hit a creature that has not taken a turn in combat yet, it must make a Con save or take double damage",
-			additional : "Save DC: 8 + Dex mod + Proficiency bonus",
+		"subclassfeature10" : {
+			name : "The Third Eye",
+			source : [["UA23PT7", 41], ["P", 116], ["MJ:HB", 0]],
+			minlevel : 10,
+			description : desc([
+				"As a Bonus Action, I gain one of the following benefits until my next Short or Long Rest:",
+				"  Darkvision 60ft, cast See Invisibility for free, or read any language.",
+			]),
+			recovery : "short rest",
+			usages : 1,
+			action : ["bonus action", ""],
+		},
+		"subclassfeature14" : {
+			name : "Greater Portent",
+			source : [["UA23PT7", 41], ["P", 117]],
+			minlevel : 14,
+			description : "\n   " + "I can roll 3d20 instead of 2d20 when using my Portent feature."
 		},
 	},
 });
 
 ////// Add UA23PT7 Evoker Wizard subclass
-AddSubClass("rogue_ua23pt6", "swashbuckler_ua23pt6", { //Ripped directly from all_WotC_pub+UA.js and then altered
-	regExpSearch : /^(?=.*(trickster|rogue))(?=.*swashbuckl).*$/i,
-	subname : "Swashbuckler",
-	source : [["UA23PT6", 53], ["S", 135], ["X", 47], ["MJ:HB", 0]],
+AddSubClass("wizard_ua23pt7", "evoker", { //Ripped directly from "ListsClasses.js" and then altered
+	regExpSearch : /(evocation|evocer|evoker)/i,
+	subname : "School of Evocation",
+	fullname : "Evoker",
+	source : [["UA23PT7", 41], ["SRD", 54], ["P", 117], ["MJ:HB", 0]],
 	features : {
 		"subclassfeature3" : {
-			name : "Fancy Footwork",
-			source : [["UA23PT6", 53], ["S", 135], ["X", 47]],
+			name : "Evocation Savant",
+			source : [["UA23PT7", 41], ["SRD", 54], ["P", 117], ["MJ:HB", 0]],
 			minlevel : 3,
-			description : desc([
-				"Enemies I make a melee attack against in my turn can't use Opportunity Attacks on me",
-				"This lasts until the end of my current turn"
-			])
+			description : desc([ //The following code for this feature was ripped from the Abjurer above and then altered
+				"I can add two Evocation spells from the Wizard spell list, each 2nd-lvl or lower, to my spellbook",
+				"  for free. Additionally, when I gain a new level of spell slots in this class, I can add one",
+				"  Evocation spell from the Wizard spell list to my spellbook for free.",
+			]),
+			additional : ["", "", "2 Evoc. spells", "2 Evoc. spells", "3 Evoc. spells", "3 Evoc. spells", "4 Evoc. spells", "4 Evoc. spells", "5 Evoc. spells", "5 Evoc. spells", "6 Evoc. spells", "6 Evoc. spells", "7 Evoc. spells", "7 Evoc. spells", "8 Evoc. spells", "8 Evoc. spells", "9 Evoc. spells", "9 Evoc. spells", "10 Evoc. spells", "10 Evoc. spells"],
+			spellcastingBonus : {
+				name : "From the Evocation school",
+				"class" : ["wizard", "wizard_ua23pt7"],
+				school : ["Evoc"],
+				times : [0, 0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+			},
 		},
 		"subclassfeature3.1" : {
-			name : "Rakish Audacity",
-			source : [["UA23PT6", 54], ["S", 136], ["X", 47]],
+			name : "Potent Cantrip",
+			source : [["UA23PT7", 41], ["SRD", 54], ["P", 117], ["MJ:HB", 0]],
+			minlevel : 3,
+			description : desc("Any cantrips I cast still deal half damage on a successful save or if I miss the atk roll."),
+			calcChanges : {
+				atkAdd : [
+					function (fields, v) {
+						if (v.isSpell && v.isDC && v.thisWeapon[3] && SpellsList[v.thisWeapon[3]].save) {
+							fields.Description = fields.Description.replace(/ success - no( damage|thing)/ , "success - half damage");
+						};
+						if (v.isSpell && !v.isDC && v.thisWeapon[3] && !SpellsList[v.thisWeapon[3]].save) {
+							fields.Description += (fields.Description ? '; ' : '') + 'half damage on a miss';
+						};
+					},
+					"My cantrips still do half damage on a successful saving throw or if I miss the atk roll, but none of their other effects."
+				],
+				spellAdd : [ //I am not experienced enough at JS coding to alter this part correctly, so I am going to leave this part as is for now.
+					function (spellKey, spellObj, spName) {
+						if (spellObj.psionic || spellObj.level || !spellObj.save || !(/\d+d\d+/).test(spellObj.description)) return;
+						var startDescr = spellObj.description;
+						spellObj.description = spellObj.description.replace("at CL 5, 11, and 17", "CL 5, 11, 17").replace(/damage/ig, "dmg").replace(/creatures?/ig, "crea").replace("save or ", "").replace("at casting or entering", "at cast/enter").replace(/(; \+\d+d\d+.*$|$)/, "; save: half dmg only$1");
+						switch (spellKey) {
+							case "lightning lure" :
+								spellObj.description = spellObj.description.replace(/(Lightn|pull)(ing|ed)/gi, "$1");
+								break;
+							case "create bonfire" :
+								spellObj.description = spellObj.description.replace("half dmg only", "half dmg");
+								break;
+						}
+						return startDescr !== spellObj.description;
+					}, //The below line is the only line of this part of the code I have altered at the moment.
+					"My cantrips still do half damage on a successful saving throw or if I miss the atk roll, but none of their other effects."
+				],
+			},
+		},
+		"subclassfeature6" : {
+			name : "Sculpt Spells",
+			source : [["UA23PT7", 41], ["SRD", 54], ["P", 117]],
 			minlevel : 3,
 			description : desc([
-				"I don't need Advantage to Sneak Attack if my target is the only one within 5 ft of me",
-				"I still can't Sneak Attack if I have Disadv.; I add my Charisma modifier to Initiative rolls"
+				"If I cast an Evocation spell affecting others I can see, I can protect 1 + the spell's level.",
+				"The chosen automatically succeed on their saving throws vs. the spell.",
+				"They also take no damage if the spell would normally deal half damage on a save."
 			]),
-			addMod : { type : "skill", field : "Init", mod : "max(Cha|0)", text : "I can add my Charisma modifier to initiative rolls." }
 		},
-		"subclassfeature9" : {
-			name : "Panache",
-			source : [["UA23PT6", 54], ["MJ:HB", 0]],
-			minlevel : 9,
+		"subclassfeature10" : {
+			name : "Empowered Evocation",
+			source : [["UA23PT7", 41], ["SRD", 54], ["P", 117], ["MJ:HB", 0]],
+			minlevel : 10,
+			description : desc("I can add my Int modifier to a single damage roll of any Wizard Evocation spell I cast."),
+			calcChanges : {
+				atkCalc : [
+					function (fields, v, output) {
+						if (v.thisWeapon[4].indexOf("wizard") !== -1 && SpellsList[v.thisWeapon[3]] && SpellsList[v.thisWeapon[3]].school === "Evoc") {
+							output.extraDmg += What('Int Mod');
+						};
+					},
+					"I add my Intelligence modifier to a single damage roll of any Wizard Evocation spell I cast."
+				],
+				spellAdd : [
+					function (spellKey, spellObj, spName) {
+						if (spName.indexOf("wizard") !== -1 && !spellObj.psionic && spellObj.school === "Evoc") return genericSpellDmgEdit(spellKey, spellObj, "\\w+\\.?", "Int", true);
+					},
+					"I add my Intelligence modifier to a single damage roll of any Wizard Evocation spell I cast."
+				],
+			},
+		},
+		"subclassfeature14" : {
+			name : "Overchannel",
+			source : [["UA23PT7", 42], ["SRD", 54], ["P", 118]],
+			minlevel : 14,
 			description : desc([
-				"I gain the following new Cunning Strike effects:",
-				" \u2022 Goad (1d6). Target make a Con save or until end of next turn, gain disadv. on attacks",
-				"  and can't do opportunity attacks vs. not-me",
-				" \u2022 Awe (3d6). Targets of my choice within 30 ft make a Wis save or gain the Charmed condition until end of my next turn.",
+				"When I cast a 5th-lvl or lower Wizard spell that damages, it can deal max damage on the turn",
+				"  I cast it. Every time I do this after the first instance before taking a Long Rest, I suffer",
+				"  2d12 Necrotic dmg per spell lvl. This necrotic damage ignores Resistances/Immunities.",
+				"I can't overchannel cantrips."
 			]),
-		},
-		"subclassfeature13" : {
-			name : "Dashing Strikes",
-			source : [["UA23PT6", 54], ["MJ:HB", 0]],
-			minlevel : 13,
-			description : desc([
-				"I gain the following new Cunning Strike effects:",
-				" \u2022 Parrying Stance (2d6). I gain a 1d6 bonus to my AC until the start of my next turn.",
-				" \u2022 Invigorate (2d6). Target of my choice within 30 ft +1d6 to attack rolls and saving throws until end of its next turn.",
-			]),
-		},
-		"subclassfeature17" : {
-			name : "Master Duelist",
-			source : [["UA23PT6", 54], ["MJ:HB", 0]],
-			minlevel : 17,
-			description : "\n   " + "Immediately after using Sneak Attack, I can make another attack against same target if it is the only one within 5 ft of me.",
+			extraLimitedFeatures : [{
+				name : "Overchannel",
+				recovery : "long rest",
+				usages : "1 + \u221E"
+			}],
 		},
 	},
 });
 
 ////// Add UA23PT7 Illusionist Wizard subclass
-AddSubClass("rogue_ua23pt6", "thief_ua23pt6", { //Ripped directly from ListsClasses.js and then altered
-	regExpSearch : /^(?=.*(trickster|rogue))(?=.*(thief)).*$/i,
-	subname : "Thief",
-	source : [["UA23PT6", 54], ["SRD", 41], ["P", 97], ["MJ:HB", 0]],
+AddSubClass("wizard_ua23pt7", "illusion", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
+	regExpSearch : /(illusion|illusionist|illusionary)/i,
+	subname : "School of Illusion",
+	fullname : "Illusionist",
+	source : [["UA23PT7", 42], ["P", 118], ["MJ:HB", 0]],
 	features : {
 		"subclassfeature3" : {
-			name : "Fast Hands",
-			source : [["UA23PT6", 54], ["SRD", 40], ["P", 97], ["MJ:HB", 0]],
+			name : "Illusion Savant",
+			source : [["UA23PT7", 42], ["P", 118], ["MJ:HB", 0]],
 			minlevel : 3,
+			description : desc([ //The following code for this feature was ripped from the Abjurer above and then altered
+				"I can add two Illusion spells from the Wizard spell list, each 2nd-lvl or lower, to my spellbook",
+				"  for free. Additionally, when I gain a new level of spell slots in this class, I can add one",
+				"  Illusion spell from the Wizard spell list to my spellbook for free.",
+			]),
+			additional : ["", "", "2 Illus. spells", "2 Illus. spells", "3 Illus. spells", "3 Illus. spells", "4 Illus. spells", "4 Illus. spells", "5 Illus. spells", "5 Illus. spells", "6 Illus. spells", "6 Illus. spells", "7 Illus. spells", "7 Illus. spells", "8 Illus. spells", "8 Illus. spells", "9 Illus. spells", "9 Illus. spells", "10 Illus. spells", "10 Illus. spells"],
+			spellcastingBonus : {
+				name : "From the Illusion school",
+				"class" : ["wizard", "wizard_ua23pt7"],
+				school : ["Illus"],
+				times : [0, 0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+			},
+		},
+		"subclassfeature3.1" : {
+			name : "Improved Minor Illusion",
+			source : [["UA23PT7", 42], ["P", 118]],
+			minlevel : 3,
+			description : "\n   " + "I gain the knowledge of the Minor Illusion cantrip (or another if I already knew it)." + "\n   " + "When I cast it, I can create both a sound and an image with a single casting.",
+			spellcastingBonus : {
+				name : "Minor Illusion cantrip",
+				spells : ["minor illusion"],
+				selection : ["minor illusion"]
+			},
+			spellChanges : {
+				"minor illusion" : {
+					description : "5-ft cube illusion includes visible and audible; Int(Investigation) check vs. Spell DC; see book",
+					changes : "My Improved Minor Illusion class feature allows me to make both a sound and an image with a single casting."
+				},
+			},
+		},
+		"subclassfeature6" : {
+			name : "Malleable Illusion",
+			source : [["UA23PT7", 42], ["P", 118], ["MJ:HB", 0]],
+			minlevel : 6,
 			description : desc([
-				"As a Bonus Action, I can do one of the following:",
-				" \u2022 Make a Dexterity (Sleight of Hand) check to pick a pocket",
-				" \u2022 Use my Thieves' Tools to disarm a trap or open a lock",
-				" \u2022 Take the Use an Object action or the Magic action to use a magic item.",
+				"After I cast an Illusion spell that lasts 1 min or longer, I can use a Bonus Action to change it.",
+				"I can only change the nature of the illusion, using the spell’s normal parameters of the illusion.",
+				"I can only make changes to an Illusion spell I can see.",
 			]),
 			action : ["bonus action", ""],
 		},
-		"subclassfeature3.1" : {
-			name : "Second-Story Work",
-			source : [["UA23PT6", 54], ["SRD", 41], ["P", 97], ["MJ:HB", 0]],
-			minlevel : 3,
-			description : desc([
-				"I climb at my normal speed; On my turn, I can move on a ceiling without an ability check if",
-				"  there is minimum 1 handhold during the move; I fall if I end my turn on the ceiling without a handhold.",
-				"My jump distance is determined by my Dexterity instead of my Strength.",
-			]),
-			speed : { climb : { spd : "walk", enc : "walk" } },
+		"subclassfeature10" : {
+			name : "Illusory Self",
+			source : [["UA23PT7", 42], ["P", 118], ["MJ:HB", 0]],
+			minlevel : 10,
+			description : "\n   " + "As a Reaction, when I'm attacked, I can impose an illusion that makes the attack miss.",
+			action : ["reaction", ""],
+			recovery : "short rest",
+			usages : 1,
+			altResource : "SS 2+",
 		},
-		"subclassfeature9" : {
-			name : "Supreme Sneak",
-			source : [["UA23PT6", 54], ["MJ:HB", 0]],
-			minlevel : 9,
+		"subclassfeature14" : {
+			name : "Illusory Reality",
+			source : [["P", 118]],
+			minlevel : 14,
 			description : desc([
-				"I gain the following new Cunning Strike effect:",
-				" \u2022 Stealth Attack (1d6). If I have the Hide action's Invisible condition, this attack doesn't end that.",
-				"  that condition on me if I end the turn behind Three-Quarters Cover or Total Cover.",
+				"As a Bonus Action, after I cast a 1st-level or higher Illusion spell, I can make it partially real.",
+				"One inanimate, nonmagical object that is part of the illusion becomes real for 1 minute.",
+				"The object can't be something that deal damage or imposes any conditions.",
 			]),
-		},
-		"subclassfeature13" : {
-			name : "Use Magic Device",
-			source : [["UA23PT6", 55], ["SRD", 41], ["P", 97]],
-			minlevel : 13,
-			description : desc([
-				"I can attune to up to 4 magic items at once.",
-				"When I use a magic item property that expends charges, roll 1d6; On a 6, I use the property without expending any charges.",
-				"I can use any Spell Scroll, using Int as my Spellcasting Ability for the spell. If the spell is a cantrip or a 1st-lvl spell,",
-				"  I can cast it reliably. If the scroll is of a higher level spell, I must succeed an Int (Arcana) check with a SC equal to",
-				"  10 + the spell's level. On a successful check, I cast the spell, otherwise the scroll disintegrates.",
-			]),
-		},
-		"subclassfeature17" : {
-			name : "Thief's Reflexes",
-			source : [["UA23PT6", 55], ["SRD", 41], ["P", 97], ["MJ:HB", 0]],
-			minlevel : 17,
-			description : desc([
-				"I can take two turns on the first round of any combat",
-				"The first turn is at my normal Initiative, and the second is at my Initiative - 10",
-			]),
+			action : ["bonus action", ""],
 		},
 	},
 });
