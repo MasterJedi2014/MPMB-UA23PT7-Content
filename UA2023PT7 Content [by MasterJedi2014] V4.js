@@ -102,11 +102,11 @@ ClassList.fighter_ua23pt7 = {
 				"I can choose 4 kinds of weapons when I reach Fighter lvl 4, 5 kinds at Fighter Lvl 10, \u0026 6 at Fighter Lvl 16.",
 				"My chosen weapon types will appear in the pg 3 Notes section.",
 			]),
-			calcChanges : {
+			/*calcChanges : {
 				atkAdd : [
 					genericFunctions.weaponMasteryAtkAdd, "", 950,
 				],
-			},
+			},*/
 			extraname : "Weapon Mastery",
 			extrachoices : ["Club", "Dagger", "Greatclub", "Handaxe", "Javelin", "Light Hammer", "Mace", "Quarterstaff", "Sickle", "Spear", "Light Crossbow", "Dart", "Shortbow", "Sling", "Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd", "Lance", "Longsword", "Maul", "Morningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War Pick", "Warhammer", "Whip", "Blowgun", "Hand Crossbow", "Heavy Crossbow", "Longbow", "Pistol", "Musket", "Pistol Automatic", "Revolver", "Hunting Rifle", "Automatic Rifle", "Shotgun", "Laser Pistol", "Antimatter Rifle", "Laser Rifle"],
 			extraTimes : levels.map(function (n) { return n < 4 ? 3 : n < 10 ? 4 : n < 16 ? 5 : 6; }),
@@ -389,11 +389,11 @@ ClassList.fighter_ua23pt7 = {
 				"  for me, not for others, and the changes end for me when I finish my next Long Rest.",
 				"For reference, the prerequisites for each Mastery property will be listed in the pg 3 Notes section.",
 			]),
-			calcChanges : {
+			/*calcChanges : {
 				atkAdd : [
 					genericFunctions.masterOfArmamentsAtkAdd, "", 950,
 				],
-			},
+			},*/
 			toNotesPage : [{
 				name : "Master of Armaments: Mastery Property Prerequisites",
 				source : [["UA23PT7", 11], ["MJ:HB", 0]],
@@ -991,15 +991,15 @@ AddSubClass("fighter_ua23pt7", "brawler_ua23pt7", {
 								var curDie = eval_ish(fields.Damage_Die.replace('d', '*'));
 							} catch (e) {
 								var curDie = 'x';
-							};
+							}
 							if (isNaN(curDie) || curDie < aBrawlerDie) {
 								fields.Damage_Die = '1d' + aBrawlerDie;
-							};
+							}
 							if (fields.Mod === 1 || fields.Mod === 2 || What(AbilityScores.abbreviations[fields.Mod - 1] + " Mod") < What(AbilityScores.abbreviations[v.StrDex - 1] + " Mod")) {
 								fields.Mod = v.StrDex;
-							};
+							}
 							fields.Description += (fields.Description ? '; ' : '') + 'Versatile (d8 [Lvl 3])/(d10 [Lvl 18])';
-						};
+						}
 					},
 					"My Unarmed Strikes deal 1d6 damage instead of 1, which increases to 1d8 if I have both hands free to make an Unarmed Strike with. At Fighter Lvl 18, the dmg increases to 1d8/1d10.",
 					5
@@ -1055,25 +1055,19 @@ AddSubClass("fighter_ua23pt7", "brawler_ua23pt7", {
 					function (fields, v, output) {
 						if (v.baseWeaponName == ("improvised weapon")) {
 							output.extraDmg += What('Prof');
-						};
-					},
-					"My Improvised Weapons deal extra damage equal to my Proficiency Bonus.",
-					1
-				],
-				atkCalc : [
-					function (fields, v, output) {
+						}
 						if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 							output.die = 12;
-						};
+						}
 					},
-					"My Two-handed Improvised Weapons use a d12 damage die.",
+					"My Improvised Weapons deal extra damage equal to my Proficiency Bonus & my Two-handed Improvised Weapons use a d12 damage die..",
 					1
 				],
 			},
 		},
 	},
 });
-if (ClassSubList["fighter_ua23pt7-brawler"]) {
+if (ClassSubList["fighter_ua23pt7-brawler_ua23pt7"]) {
 	AddFeatureChoice(ClassSubList["fighter_ua23pt7-brawler_ua23pt7"].features["subclassfeature3.1"], true, "One-Handed 1: Light", {
 		name : "One-Handed 1: Light",
 		extraname : "Brawler Fighter 3",
@@ -1085,7 +1079,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 					if ((/improvised/i).test(v.WeaponName + v.baseWeaponName) && (/improvised weapon/i).test(v.theWea.type)) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Light';
 						fields.Range = 'Melee';
-					};
+					}
 				},
 				"I have chosen to add the Light weapon property to my one-handed Improvised Weapons."
 			]
@@ -1102,7 +1096,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 					if ((/improvised/i).test(v.WeaponName + v.baseWeaponName) && (/improvised weapon/i).test(v.theWea.type)) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Thrown';
 						fields.Range = '20/60 ft';
-					};
+					}
 				},
 				"I have chosen to add the Thrown weapon property to my one-handed Improvised Weapons, with a range of 20 ft/60 ft."
 			]
@@ -1118,7 +1112,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Reach';
-					};
+					}
 				},
 				"I have chosen to add the Reach weapon property to my two-handed Improvised Weapons."
 			]
@@ -1135,7 +1129,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 					if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Thrown';
 						fields.Range = '10/30 ft';
-					};
+					}
 				},
 				"I have chosen to add the Thrown weapon property to my two-handed Improvised Weapons, with a range of 10 ft/30 ft."
 			]
@@ -1151,7 +1145,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if ((/improvised/i).test(v.WeaponName + v.baseWeaponName) && (/improvised weapon/i).test(v.theWea.type)) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-					};
+					}
 				},
 				"I have chosen to add the Sap Mastery property to my one-handed Improvised Weapons."
 			]
@@ -1167,7 +1161,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if ((/improvised/i).test(v.WeaponName + v.baseWeaponName) && (/improvised weapon/i).test(v.theWea.type)) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-					};
+					}
 				},
 				"I have chosen to add the Slow Mastery property to my one-handed Improvised Weapons."
 			]
@@ -1183,7 +1177,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if ((/improvised/i).test(v.WeaponName + v.baseWeaponName) && (/improvised weapon/i).test(v.theWea.type)) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-					};
+					}
 				},
 				"I have chosen to add the Vex Mastery property to my one-handed Improvised Weapons."
 			]
@@ -1199,7 +1193,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Cleave';
-					};
+					}
 				},
 				"I have chosen to add the Cleave Mastery property to my two-handed Improvised Weapons."
 			]
@@ -1215,7 +1209,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Push';
-					};
+					}
 				},
 				"I have chosen to add the Push Mastery property to my two-handed Improvised Weapons."
 			]
@@ -1231,7 +1225,7 @@ if (ClassSubList["fighter_ua23pt7-brawler"]) {
 				function (fields, v) {
 					if( (/two-handed/i.test(fields.Description + v.WeaponName)) && (/improvised weapon/i.test(v.theWea.type) || (/improvised/i).test(v.WeaponName + v.baseWeaponName))) {
 						fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-					};
+					}
 				},
 				"I have chosen to add the Topple Mastery property to my two-handed Improvised Weapons."
 			]
@@ -1257,7 +1251,7 @@ AddSubClass("fighter_ua23pt7", "champion_ua23pt7", {
 						if (!v.isSpell && !v.CritChance && classes.known.fighter_ua23pt7 && classes.known.fighter_ua23pt7.level < 15) {
 							fields.Description += (fields.Description ? '; ' : '') + 'Crit on 19-20';
 							v.CritChance = 19;
-						};
+						}
 					},
 					"My weapon attacks score a critical on a to hit roll of both 19 and 20.",
 					19
@@ -1307,7 +1301,7 @@ AddSubClass("fighter_ua23pt7", "champion_ua23pt7", {
 						} else if (!v.CritChance) {
 							fields.Description += (fields.Description ? '; ' : '') + 'Crit on 18-20';
 							v.CritChance = 18;
-						};
+						}
 					},
 					"My weapon attacks also score a critical on a to hit roll of 18.",
 					18
@@ -1849,7 +1843,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 						function (fields, v, output) {
 							if (classes.known.sorcerer_ua23pt7 && classes.known.sorcerer_ua23pt7.level > 5 && v.isSpell && (/acid/i).test(fields.Damage_Type)) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"Cantrips and spells that deal acid damage get my Charisma modifier added to their damage."
 					],
@@ -1873,7 +1867,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 						function (fields, v, output) {
 							if (classes.known.sorcerer_ua23pt7 && classes.known.sorcerer_ua23pt7.level > 5 && v.isSpell && (/cold/i).test(fields.Damage_Type)) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"Cantrips and spells that deal cold damage get my Charisma modifier added to their damage."
 					],
@@ -1897,7 +1891,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 						function (fields, v, output) {
 							if (classes.known.sorcerer_ua23pt7 && classes.known.sorcerer_ua23pt7.level > 5 && v.isSpell && (/fire/i).test(fields.Damage_Type)) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"Cantrips and spells that deal fire damage get my Charisma modifier added to their damage."
 					],
@@ -1921,7 +1915,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 						function (fields, v, output) {
 							if (classes.known.sorcerer_ua23pt7 && classes.known.sorcerer_ua23pt7.level > 5 && v.isSpell && (/lightning/i).test(fields.Damage_Type)) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"Cantrips and spells that deal lightning damage get my Charisma modifier added to their damage."
 					],
@@ -1945,7 +1939,7 @@ AddSubClass("sorcerer_ua23pt7", "draconic bloodline", {
 						function (fields, v, output) {
 							if (classes.known.sorcerer_ua23pt7 && classes.known.sorcerer_ua23pt7.level > 5 && v.isSpell && (/poison/i).test(fields.Damage_Type)) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"Cantrips and spells that deal poison damage get my Charisma modifier added to their damage."
 					],
@@ -2187,7 +2181,7 @@ ClassList.warlock_ua23pt7 = {
 						function (fields, v, output) {
 							if (classes.known.warlock_ua23pt7 && v.thisWeapon[3] && v.thisWeapon[4].indexOf('warlock_ua23pt7') !== -1 && SpellsList[v.thisWeapon[3]].level === 0) {
 								output.extraDmg += What('Cha Mod');
-							};
+							}
 						},
 						"My Warlock cantrips get my Charisma modifier added to their damage."
 					],
@@ -2700,7 +2694,7 @@ ClassList.warlock_ua23pt7 = {
 									v.pactMag = 1;
 									output.magic = 1;
 								}
-							};
+							}
 						},
 						"If I include the word 'Pact' in a the name of a melee weapon, shortbow, longbow, light crossbow, or heavy crossbow, it will be treated as my Pact Weapon.\n \u2022 If my Pact Weapon doesn't already include a magical bonus in its name and is not a magic weapon with at least a +1 bonus, the calculation will add +1 to its To Hit and Damage.",
 						290
@@ -2709,7 +2703,7 @@ ClassList.warlock_ua23pt7 = {
 						function (fields, v) {
 							if ((/^(shortbow|longbow|light crossbow|heavy crossbow)$/).test(v.baseWeaponName) && (/\bpact\b/i).test(v.WeaponTextName)) {
 								v.pactWeapon = true;
-							};
+							}
 						}, "", 90]
 				},
 			},
@@ -3001,7 +2995,7 @@ ClassList.warlock_ua23pt7 = {
 								v.pactWeapon = true;
 								fields.Proficiency = true;
 								if (!v.theWea.isMagicWeapon && !v.thisWeapon[1] && !(/counts as( a)? magical/i).test(fields.Description)) fields.Description += (fields.Description ? '; ' : '') + 'Counts as magical';
-							};
+							}
 						},
 						"If I include the word 'Pact' in a melee or magic weapon's name, it gets treated as my Pact Weapon.",
 						290
@@ -3262,7 +3256,7 @@ ClassList.warlock_ua23pt7 = {
 								if (v.pactMag) output.magic -= v.pactMag;
 								v.pactMag = iPactWeaBonus;
 								output.magic += v.pactMag;
-							};
+							}
 						},
 						"If my Pact Weapon doesn't already include a magical bonus in its name or gets it from somewhere else and is not a magic weapon, the calculation will add +2 to its To Hit and Damage."
 					]
@@ -3344,7 +3338,7 @@ ClassList.warlock_ua23pt7 = {
 								if (v.pactMag) output.magic -= v.pactMag;
 								v.pactMag = iPactWeaBonus;
 								output.magic += v.pactMag;
-							};
+							}
 						},
 						"If my Pact Weapon doesn't already include a magical bonus in its name or gets it from somewhere else and is not a magic weapon, the calculation will add +3 to its To Hit and Damage."
 					]
@@ -3575,13 +3569,11 @@ AddFeatureChoice(ClassList.warlock_ua23pt7.features["pact magic ua23pt7"], true,
 	description : desc([
 		"This feature adds the appropriate Mastery Property to my pact weapons.",
 	]),
-	calcChanges : {
+	/*calcChanges : {
 		atkAdd : [
-			atkAdd : [
-				genericFunctions.weaponMasteryAtkAdd, "", 950,
-			],
+			genericFunctions.weaponMasteryAtkAdd, "", 950,
 		],
-	},
+	},*/
 	prereqeval : function (v) { return classes.known.warlock_ua23pt7.level >= 2 ? true : "skip" && GetFeatureChoice('class', 'warlock_ua23pt7', 'eldritch invocations ua23pt7') == 'pact of the blade'; }
 }, "Optional 1st-level warlock features");
 
@@ -3700,7 +3692,7 @@ AddSubClass("warlock_ua23pt7", "the celestial", { //Ripped directly from "all_Wo
 					function (fields, v, output) {
 						if (v.isSpell && (/fire|radiant/i).test(fields.Damage_Type)) {
 							output.extraDmg += What('Cha Mod');
-						};
+						}
 					},
 					"Cantrips and spells that fire or radiant damage get my Charisma modifier added to their damage to one target."
 				],
@@ -4133,7 +4125,7 @@ AddSubClass("wizard_ua23pt7", "abjuration", { //Ripped directly from "all_WotC_p
 							}
 							spellObj.description = spellObj.description.replace(theMatch[0], theMatch[1] + " check (" + (theBonus >= 0 ? "+" : "") + theBonus + ")");
 							return true;
-						};
+						}
 					},
 					"I add my Proficiency Bonus to ability checks required by Dispel Magic. This is shown on the spell sheet by a lowered DC on the check."
 				]
@@ -4251,10 +4243,10 @@ AddSubClass("wizard_ua23pt7", "evoker", { //Ripped directly from "ListsClasses.j
 					function (fields, v) {
 						if (v.isSpell && v.isDC && v.thisWeapon[3] && SpellsList[v.thisWeapon[3]].save) {
 							fields.Description = fields.Description.replace(/ success - no( damage|thing)/ , "success - half damage");
-						};
+						}
 						if (v.isSpell && !v.isDC && v.thisWeapon[3] && !SpellsList[v.thisWeapon[3]].save) {
 							fields.Description += (fields.Description ? '; ' : '') + 'half damage on a miss';
-						};
+						}
 					},
 					"My cantrips still do half damage on a successful saving throw or if I miss the atk roll, but none of their other effects."
 				],
@@ -4297,7 +4289,7 @@ AddSubClass("wizard_ua23pt7", "evoker", { //Ripped directly from "ListsClasses.j
 					function (fields, v, output) {
 						if (v.thisWeapon[4].indexOf("wizard") !== -1 && SpellsList[v.thisWeapon[3]] && SpellsList[v.thisWeapon[3]].school === "Evoc") {
 							output.extraDmg += What('Int Mod');
-						};
+						}
 					},
 					"I add my Intelligence modifier to a single damage roll of any Wizard Evocation spell I cast."
 				],
@@ -4703,7 +4695,7 @@ FeatsList["thrown weapon fighting style ua23pt7"] = {
 			function (fields, v) {
 				if (v.isThrownWeapon && v.isMeleeWeapon) {
 					fields.Description += (fields.Description ? '; ' : '') + '+2 damage when thrown';
-				};
+				}
 			},
 			"I deal +2 damage when I hit a ranged attack made with a thrown weapon."
 		],
@@ -4711,7 +4703,7 @@ FeatsList["thrown weapon fighting style ua23pt7"] = {
 			function (fields, v, output) {
 				if (v.isThrownWeapon && !v.isMeleeWeapon) {
 					output.extraDmg += 2;
-				};
+				}
 			},
 			""
 		]
@@ -4735,7 +4727,7 @@ FeatsList["unarmed fighting style ua23pt7"] = {
 				if (v.baseWeaponName == "unarmed strike") {
 					if (fields.Damage_Die == 1 || fields.Damage_Die == "1d4") fields.Damage_Die = '1d6';
 					fields.Description += (fields.Description ? '; ' : '') + 'Versatile (d8)';
-				};
+				}
 			},
 			"My Unarmed Strikes deal 1d6 damage instead of 1, which increases to 1d8 if I have both hands free to make an Unarmed Strike with.",
 			1
