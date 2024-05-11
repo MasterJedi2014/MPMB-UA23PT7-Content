@@ -37,7 +37,7 @@ A lot of the content of this script is either ripped directly from existing code
   - Thrown Weapon
   - Unarmed
 - Added "Two-Handed Improvised Weapon"; made with help from user "TrackAtNite"
-- Added code to handle Weapon Mastery properties with help from user "Joost/MorePurpleMoreBetter"
+- ~~Added code to handle Weapon Mastery properties with help from user "Joost/MorePurpleMoreBetter"~~ *Temporarily Disabled*
 
 This encompasses all of the content in this UA article that wasn't superseded or removed in later content.
 
@@ -52,6 +52,8 @@ This script will allow users to more easily playtest the upcoming revision to D&
   - Replacement of WIP V2.9 with V2.92, & replacement of WIP V3 with V4 of the script. Scripts now have all UA Warlock content, and it should now all be working.
 - **2024-05-10:**
   - Removal of V2.92 because the release copy of V4 is complete, making the Warlock only file obsolete. Replacement of WIP V4 with release V4 of the script.
+- **2024-05-11:**
+  - A lot of code cleanup & the code referencing the Mastery property functions have been disabled so that the script will load into more sheets.
 
 **Known Bugs:**
 - Neither of the Mastery property functions I have written are doing their job at the moment; I'll be looking on getting advice on how to get them working.
