@@ -3,7 +3,7 @@
 	Effect:		This script adds the content from the 2023 Unearthed Arcana "Player's Handbook Playtest 7" article.
 				This file has been made by MasterJedi2014, borrowing a lot of code from MPMB and those who have contributed to the sheet's existing material.
 	Code by:	MasterJedi2014, using MorePurpleMoreBetter's code as reference
-	Date:		2024-05-10 (sheet v13.1.0)
+	Date:		2024-05-13 (sheet v13.1.0)
 */
 
 var iFileName = "UA2023PT7 Content [by MasterJedi2014] V4.js";
@@ -19,7 +19,86 @@ SourceList["UA23PT7"] = {
 SourceList["MJ:HB"] = {
 	name : "MasterJedi2014's Homebrew",
 	abbreviation : "MJ:HB",
-	date : "2024/05/10",
+	date : "2024/05/13",
+};
+
+// Add "weaponMasteryAtkAdd" & "masterOfArmamentsAtkAdd" functions for Weapon Masteries, made by user @Joost/MorePurpleMoreBetter
+masteryFunctions = {
+  weaponMasteryAtkAdd : [
+    function (fields, v, addIfPactWeapon) {
+      if ( /mastery/i.test(v.WeaponText) || (addIfPactWeapon && v.pactWeapon) ) return; // less indentation is easier to read
+      // Sum all the WeaponsList object names that get a certain mastery
+      var oMasteries = {
+        'Slow' : ['club', 'javelin', 'light crossbow', 'sling', 'whip', 'longbow', 'musket', 'rifle hunting', 'rifle automatic', 'shotgun', 'antimatter rifle', 'laser rifle'],
+        'Nick' : ['dagger', 'light hammer', 'sickle', 'scimitar', ''],
+        'Push' : ['greatclub', 'pike', 'warhammer', 'heavy crossbow'],
+        'Vex' : ['handaxe', 'dart', 'shortbow', 'rapier', 'shortsword', 'blowgun', 'hand crossbow', 'pistol', 'pistol automatic', 'revolver', 'laser pistol'],
+        'Sap' : ['mace', 'spear', 'flail', 'lonsword', 'morningstar', 'war pick', ''],
+        'Topple' : ['quarterstaff', 'battleaxe', 'lance', 'maul', 'trident'],
+        'Graze' : ['glaive', 'greatsword'],
+        'Cleave' : ['greataxe', 'halberd']
+      }
+      // Loop over these and add the mastery only if either v.WeaponName or v.baseWeaponName match exactly
+      loopMasteries:
+      for (var sMastery in oMasteries) {
+        // Loop over all the weapons in the mastery's array to see if any match
+        var aWeapons = oMasteries[sMastery];
+        loopWeapons:
+        for (var i = 0; i < aWeapons.length; i++) {
+          if ( aWeapons[i] === v.WeaponName || aWeapons[i] === v.baseWeaponName ) {
+            fields.Description += (fields.Description ? ', ' : '') + 'Mstry: ' + sMastery;
+            v.mastery = sMastery; // save to later reference
+            break loopMasteries;
+          }
+        }
+      }
+    },
+    'If I include the word "Mastery" in the name of a weapon, the Mastery property for that weapon will be appended to the description, if any.',
+    1 // make this be process first, as it is a base change to the item's description that we want all other descriptions to come after (hence the use of a comma instead of a semicolon when adding the description above)
+  ],
+  masterOfArmamentsAtkAdd : [
+    function (fields, v) {
+      if ( !/mastery/i.test(v.WeaponTextName) || v.masterOfArmaments ) return; // less indentation is easier to read
+      // Make an array of all the optional masteries the weapon is eligible for (thus, always include Slow)
+      var aOptionalMasteries = ['Slow'];
+      if ( v.isMeleeWeapon && /heavy/i.test(fields.Description) ) {
+        aOptionalMasteries.push('Cleave', 'Graze');
+      }
+      if ( /light/i.test(fields.Description) ) {
+        aOptionalMasteries.push('Nick');
+      }
+      if ( /heavy|two-handed|versatile/i.test(fields.Description) ) {
+        aOptionalMasteries.push('Push');
+      }
+      if ( /versatile/i.test(fields.Description) || !v.theWea.description ) {
+        aOptionalMasteries.push('Sap');
+      }
+      if ( /heavy|reach|versatile/i.test(fields.Description) ) {
+        aOptionalMasteries.push('Topple');
+      }
+      if ( /ammunition|finesse|light/i.test(fields.Description) ) {
+        aOptionalMasteries.push('Vex');
+      }
+      // Add the default mastery of the weapon, if not already eligible
+      if ( v.mastery && aOptionalMasteries.indexOf(v.mastery) === -1 ) {
+        aOptionalMasteries.push(v.mastery);
+      }
+      // Sort this new array
+      aOptionalMasteries.sort();
+      var sMasteries = 'Mstry: ' + aOptionalMasteries.join('/');
+      // Add to the description (replace current "Mstry: X" if it exists)
+      var rxMstry = /Mstry: (Slow|Nick|Push|Vex|Sap|Topple|Graze|Cleave)/i;
+      if ( rxMstry.test(fields.Description) ) {
+        fields.Description = fields.Description.replace(rxMstry, sMasteries);
+      } else {
+        // no "Mstry: X" string so just add it to the end
+        fields.Description += (fields.Description ? '; ' : '') + sMasteries;
+      }
+      // Save that this function was run on this weapon so it isn't accidentally done twice
+      v.masterOfArmaments = true;
+    },
+    'Weapons with the word "Mastery" will have any extra Mastery properties that they qualify for appended to their descriptions.'
+  ]
 };
 
 // Add UA23PT7 Fighter class
@@ -92,7 +171,15 @@ ClassList.fighter_ua23pt7 = {
 			recovery : "long rest",
 			action : ["bonus action", ""]
 		},
-		"weapon mastery ua23pt7" : { //Using extrachoices for this per the suggestion of MPMB. Not sure if the sheet can handle 46 such options in a single dialog box.
+		"weapon mastery ua23pt7" : {
+			/* This feature calls the masteryFunctions.weaponMasteryAtkAdd function (made by Joost/MPMB) for the
+			actual weapon description alterations. The feature also lets the user select via extrachoices what
+			Weapons they currently have chosen to add Mastery properties to. The extrachoices options are
+			functionally useless, but I'm leaving it in here because I know some users in my own play group need
+			what the extrachoices does to realize "Oh, I need to remove the word 'Mastery' from one of my weapons
+			to use the Mastery property of a different weapon".
+			Joost/MPMB, you can remove the extrachoices aspect of this if you want when you get around to updating
+			the sheet code yourself for the revised rules.*/
 			name : "Weapon Mastery",
 			source : [["UA23PT7", 11], ["MJ:HB", 0]],
 			minlevel : 1,
@@ -102,11 +189,9 @@ ClassList.fighter_ua23pt7 = {
 				"I can choose 4 kinds of weapons when I reach Fighter lvl 4, 5 kinds at Fighter Lvl 10, \u0026 6 at Fighter Lvl 16.",
 				"My chosen weapon types will appear in the pg 3 Notes section.",
 			]),
-			/*calcChanges : {
-				atkAdd : [
-					genericFunctions.weaponMasteryAtkAdd, "", 950,
-				],
-			},*/
+			calcChanges : {
+				atkAdd : masteryFunctions.weaponMasteryAtkAdd
+			},
 			extraname : "Weapon Mastery",
 			extrachoices : ["Club", "Dagger", "Greatclub", "Handaxe", "Javelin", "Light Hammer", "Mace", "Quarterstaff", "Sickle", "Spear", "Light Crossbow", "Dart", "Shortbow", "Sling", "Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd", "Lance", "Longsword", "Maul", "Morningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War Pick", "Warhammer", "Whip", "Blowgun", "Hand Crossbow", "Heavy Crossbow", "Longbow", "Pistol", "Musket", "Pistol Automatic", "Revolver", "Hunting Rifle", "Automatic Rifle", "Shotgun", "Laser Pistol", "Antimatter Rifle", "Laser Rifle"],
 			extraTimes : levels.map(function (n) { return n < 4 ? 3 : n < 10 ? 4 : n < 16 ? 5 : 6; }),
@@ -389,11 +474,9 @@ ClassList.fighter_ua23pt7 = {
 				"  for me, not for others, and the changes end for me when I finish my next Long Rest.",
 				"For reference, the prerequisites for each Mastery property will be listed in the pg 3 Notes section.",
 			]),
-			/*calcChanges : {
-				atkAdd : [
-					genericFunctions.masterOfArmamentsAtkAdd, "", 950,
-				],
-			},*/
+			calcChanges : {
+				atkAdd : masteryFunctions.masterOfArmamentsAtkAdd
+			},
 			toNotesPage : [{
 				name : "Master of Armaments: Mastery Property Prerequisites",
 				source : [["UA23PT7", 11], ["MJ:HB", 0]],
@@ -422,186 +505,6 @@ ClassList.fighter_ua23pt7 = {
 			]),
 		},
 	},
-};
-
-// Add "weaponMasteryAtkAdd" & "masterOfArmamentsAtkAdd" genericFunctions for Weapon Masteries, made with help from user @Joost/MorePurpleMoreBetter
-genericFunctions = {
-	weaponMasteryAtkAdd : [
-		function (fields, v) {
-			if (/mastery/i.test(v.WeaponText)) {
-				if ((/club/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/dagger/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Nick';
-				}
-				if ((/greatclub/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Push';
-				}
-				if ((/handaxe/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/javelin/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/light hammer/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Nick';
-				}
-				if ((/mace/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/quarterstaff/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-				}
-				if ((/sickle/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Nick';
-				}
-				if ((/spear/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/light crossbow/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/dart/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/shortbow/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/sling/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/battleaxe/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-				}
-				if ((/flail/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/glaive/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Graze';
-				}
-				if ((/greataxe/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Cleave';
-				}
-				if ((/greatsword/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Graze';
-				}
-				if ((/halberd/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Cleave';
-				}
-				if ((/lance/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-				}
-				if ((/longsword/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/maul/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-				}
-				if ((/morningstar/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/pike/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Push';
-				}
-				if ((/rapier/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/scimitar/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Nick';
-				}
-				if ((/shortsword/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/trident/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Topple';
-				}
-				if ((/war pick/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Sap';
-				}
-				if ((/warhammer/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Push';
-				}
-				if ((/whip/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/blowgun/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/hand crossbow/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/heavy crossbow/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Push';
-				}
-				if ((/longbow/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/musket/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/pistol/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/pistol automatic/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/revolver/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/rifle hunting/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/rifle automatic/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/shotgun/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/laser pistol/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Vex';
-				}
-				if ((/antimatter rifle/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-				if ((/laser rifle/i).test(v.WeaponName + v.baseWeaponName)) {
-					fields.Description += (fields.Description ? '; ' : '') + 'Mstry: Slow';
-				}
-			}
-		},
-		'If I include the word "Mastery" in the name of a weapon, the Mastery property for that weapon will be appended to the description.',
-	],
-	masterOfArmamentsAtkAdd : [
-		function (fields, v) {
-			if (/mastery/i.test(v.WeaponText)) {
-				if ((/heavy/i).test(fields.Description) && v.isMeleeWeapon) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Cleave';
-				}
-				if ((/heavy/i).test(fields.Description) && v.isMeleeWeapon) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Graze';
-				}
-				if ((/light/i).test(fields.Description)) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Nick';
-				}
-				if ((/heavy|two-handed|versatile/i).test(fields.Description)) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Push';
-				}
-				if (((/versatile/i).test(fields.Description) || !(/ammunition|finesse|heavy|light|loading|reach|special|thrown|two-handed|versatile/i).test(fields.Description))) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Sap';
-				}
-				if (!(/Mstry: Slow/i).test(fields.Description)) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Slow';
-				}
-				if ((/heavy|reach|versatile/i).test(fields.Description)) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Topple';
-				}
-				if ((/ammunition|finesse|light/i).test(fields.Description)) {
-					fields.Description += (fields.Description ? ', ' : '') + 'Vex';
-				}
-			}
-		},
-		'Weapons with the word "Mastery" will have any extra Mastery properties that they qualify for appended to their descriptions.',
-	],
 };
 
 //// Add Fighter "Fighting Style" choices
@@ -2983,24 +2886,25 @@ ClassList.warlock_ua23pt7 = {
 				calcChanges : {
 					atkCalc : [
 						function (fields, v, output) {
-							if (v.theWea.pactWeapon || ((v.isMeleeWeapon || v.thisWeapon[1]) && (/\bpact\b/i).test(v.WeaponTextName))) {
+							if ((v.theWea.pactWeapon || ((v.isMeleeWeapon || v.theWea.isMagicWeapon || v.thisWeapon[1]) && (/\bpact\b/i).test(v.WeaponTextName))) && What('Cha Mod') > What(AbilityScores.abbreviations[fields.Mod - 1] + ' Mod')) {
+								fields.Mod = 6;
 								v.pactWeapon = true;
 							}
 						}, "",
-						90
+						90,
 					],
 					atkAdd : [
 						function (fields, v) {
-							if (v.pactWeapon || v.theWea.pactWeapon || ((v.isMeleeWeapon || v.thisWeapon[1]) && (/\bpact\b/i).test(v.WeaponTextName))) {
+							if ((v.pactWeapon || v.theWea.pactWeapon || ((v.isMeleeWeapon || v.theWea.isMagicWeapon || v.thisWeapon[1]) && (/\bpact\b/i).test(v.WeaponTextName))) && What('Cha Mod') > What(AbilityScores.abbreviations[fields.Mod - 1] + ' Mod')) {
+								fields.Mod = 6;
 								v.pactWeapon = true;
 								fields.Proficiency = true;
-								if (!v.theWea.isMagicWeapon && !v.thisWeapon[1] && !(/counts as( a)? magical/i).test(fields.Description)) fields.Description += (fields.Description ? '; ' : '') + 'Counts as magical';
 							}
 						},
 						"If I include the word 'Pact' in a melee or magic weapon's name, it gets treated as my Pact Weapon.",
 						290
 					],
-				}
+				},
 			},
 			"pact of the chain (prereq: level 2 warlock)" : {
 				name : "Pact of the Chain",
@@ -3562,20 +3466,24 @@ AddFeatureChoice(ClassList.warlock_ua23pt7.features["magical cunning ua23pt7"], 
 	]),
 	prereqeval : function (v) { return classes.known.warlock_ua23pt7.level >= 4 ? true : "skip"; }
 }, "Optional 4th-level warlock features");
-AddFeatureChoice(ClassList.warlock_ua23pt7.features["pact magic ua23pt7"], true, "Pact of the Blade Mastery Properties", {
+/*AddFeatureChoice(ClassList.warlock_ua23pt7.features["pact magic ua23pt7"], true, "Pact of the Blade Mastery Properties", {
 	name : "Pact of the Blade Mastery Properties",
 	extraname : "Optional Warlock 1",
 	source : [["UA23PT7", 30], ["SRD", 47], ["P", 107], ["MJ:HB", 0]],
 	description : desc([
 		"This feature adds the appropriate Mastery Property to my pact weapons.",
 	]),
-	/*calcChanges : {
+	calcChanges : {
 		atkAdd : [
-			genericFunctions.weaponMasteryAtkAdd, "", 950,
-		],
-	},*/
+			function (fields, v) {
+				masteryFunctions.weaponMasteryAtkAdd[0](fields, v, true);
+			},
+			'My pact weapon gets its mastery feature added to its description.',
+			291
+		]
+	},
 	prereqeval : function (v) { return classes.known.warlock_ua23pt7.level >= 2 ? true : "skip" && GetFeatureChoice('class', 'warlock_ua23pt7', 'eldritch invocations ua23pt7') == 'pact of the blade'; }
-}, "Optional 1st-level warlock features");
+}, "Optional 1st-level warlock features");*/
 
 ////// Add UA23PT7 Archfey Patron Warlock subclass
 AddSubClass("warlock_ua23pt7", "the archfey", { //Ripped directly from "all_WotC_pub+UA.js" and then altered
