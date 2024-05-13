@@ -4,6 +4,9 @@ Adds the content from "Unearthed Arcana 2023: Player's Handbook Playtest 7" to t
 **Script Credit Note:**
 A lot of the content of this script is either ripped directly from existing code or is an altered form of existing code. I have tried to diligently note when I copied code from elsewhere, but I probably missed some instances. A lack of note saying I ripped the code from elsewhere either means that I wrote that section of code entirely myself or that the code that was copied to use as a starting point was so heavily altered by me that almost nothing of the copied code exists.
 
+# This script needs the following script loaded before this one or else the sheet runs into errors:
+- MPMB-UA23PT8-Weapons (https://github.com/MasterJedi2014/MPMB-UA23PT8-Weapons)
+
 **Detailed List of Script Content:**
 - UA23PT7 Fighter & its subclasses
   - Battle Master
@@ -37,7 +40,6 @@ A lot of the content of this script is either ripped directly from existing code
   - Thrown Weapon
   - Unarmed
 - Added "Two-Handed Improvised Weapon"; made with help from user "TrackAtNite"
-- Added code to handle Weapon Mastery properties made by user "Joost/MorePurpleMoreBetter"
 
 This encompasses all of the content in this UA article that wasn't superseded or removed in later content.
 
@@ -55,7 +57,7 @@ This script will allow users to more easily playtest the upcoming revision to D&
 - **2024-05-11:**
   - A lot of code cleanup & the code referencing the Mastery property functions have been disabled so that the script will load into more sheets.
 - **2024-05-13:**
-  - The previous Mastery property code has been replaced with code made by user "Joost/MorePurpleMoreBetter".
+  - The Mastery property code has been moved from this script to the "MPMB-UA23PT8-Weapons" script so that I can implement calls for its code into the "MPMB-UA23PT7-Content" script.
   - Despite Joost giving me an example, I can't get the sheet to add the Mastery property to the description of a Pact of the Blade weapon. I have therefore opted to remove any code mentions of Mastery properties from the Pact of the Blade Invocation, as I am clearly not good enough at JS to get that working.
 
 **Known Bugs:**
