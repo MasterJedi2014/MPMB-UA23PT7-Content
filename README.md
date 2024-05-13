@@ -59,7 +59,7 @@ This script will allow users to more easily playtest the upcoming revision to D&
   - Despite Joost giving me an example, I can't get the sheet to add the Mastery property to the description of a Pact of the Blade weapon. I have therefore opted to remove any code mentions of Mastery properties from the Pact of the Blade Invocation, as I am clearly not good enough at JS to get that working.
 
 **Known Bugs:**
-- ~~Neither of the Mastery property functions I have written are doing their job at the moment; I'll be looking on getting advice on how to get them working.~~ FIxed on 2024-05-13.
+- ~~Neither of the Mastery property functions I have written are doing their job at the moment; I'll be looking on getting advice on how to get them working.~~ Fixed on 2024-05-13.
 - ~~A not insignificant number of the Eldritch Invocations are failing to appear in the "Choose Feature" menu.~~ Fixed on 2024-05-09.
 
 **Script Content Source:** https://media.dndbeyond.com/compendium-images/ua/ph-playtest7/tsgOb3llF22AL0nU/UA2023-PH-Playtest7.pdf
