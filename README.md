@@ -37,7 +37,7 @@ A lot of the content of this script is either ripped directly from existing code
   - Thrown Weapon
   - Unarmed
 - Added "Two-Handed Improvised Weapon"; made with help from user "TrackAtNite"
-- ~~Added code to handle Weapon Mastery properties with help from user "Joost/MorePurpleMoreBetter"~~ *Temporarily Disabled*
+- Added code to handle Weapon Mastery properties made by user "Joost/MorePurpleMoreBetter"
 
 This encompasses all of the content in this UA article that wasn't superseded or removed in later content.
 
@@ -54,9 +54,12 @@ This script will allow users to more easily playtest the upcoming revision to D&
   - Removal of V2.92 because the release copy of V4 is complete, making the Warlock only file obsolete. Replacement of WIP V4 with release V4 of the script.
 - **2024-05-11:**
   - A lot of code cleanup & the code referencing the Mastery property functions have been disabled so that the script will load into more sheets.
+- **2024-05-13:**
+  - The previous Mastery property code has been replaced with code made by user "Joost/MorePurpleMoreBetter".
+  - Despite Joost giving me an example, I can't get the sheet to add the Mastery property to the description of a Pact of the Blade weapon. I have therefore opted to remove any code mentions of Mastery properties from the Pact of the Blade Invocation, as I am clearly not good enough at JS to get that working.
 
 **Known Bugs:**
-- Neither of the Mastery property functions I have written are doing their job at the moment; I'll be looking on getting advice on how to get them working.
+- ~~Neither of the Mastery property functions I have written are doing their job at the moment; I'll be looking on getting advice on how to get them working.~~ FIxed on 2024-05-13.
 - ~~A not insignificant number of the Eldritch Invocations are failing to appear in the "Choose Feature" menu.~~ Fixed on 2024-05-09.
 
 **Script Content Source:** https://media.dndbeyond.com/compendium-images/ua/ph-playtest7/tsgOb3llF22AL0nU/UA2023-PH-Playtest7.pdf
